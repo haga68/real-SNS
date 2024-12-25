@@ -17,8 +17,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        {/* <Route path="/" element={user ? <Home /> : <Register />} /> */}
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={user ? <Home /> : <Register />} />
         {/* ユーザーがいればホームComponent、いなければ新規登録のComponentへ */}
 
         {/* <Route path="/login" element={<Login />} /> */}
