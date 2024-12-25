@@ -17,11 +17,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={user ? <Home /> : <Register />} />
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={user ? <Home /> : <Register />} /> */}
         {/* ユーザーがいればホームComponent、いなければ新規登録のComponentへ */}
+
         {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
         {/* <Navigate to="/" />は、リダイレクト用のComponent */}
+
         {/* <Route path="/register" element={<Register />} /> */}
         <Route
           path="/register"
