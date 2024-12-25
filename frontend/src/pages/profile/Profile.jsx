@@ -30,19 +30,13 @@ export default function Profile() {
         <div className='profileRight'>
           <div className='profileRightTop'>
             <div className="profileCover">
-              <img
-                src={user.coverPicture || PUBLIC_FOLDER + "/post/3.jpeg"}
-                alt=""
-                className='profileCoverImg'
-              />
-              <img
-                src={
+              <img src={user.coverPicture || PUBLIC_FOLDER + "/post/3.jpeg"}
+                className='profileCoverImg'/>
+              <img src={
                   PUBLIC_FOLDER + user.profilePicture || 
                   PUBLIC_FOLDER + "/person/noAvatar.png"
                 }
-                alt=""
-                className='profileUserImg'
-              />
+                className='profileUserImg'/>
             </div>
             <div className="profileInfo">
               <h4 className='profileInfoName'>{user.username}</h4>

@@ -16,8 +16,8 @@ export default function Share() {
     e.preventDefault();
 
     const newPost = {
-      userId: user._id,   //ログイン中のユーザー
-      desc: desc.current.value, //つぶやきの中身
+      userId: user._id,         //誰が投稿するのか（ログイン中のユーザー）
+      desc: desc.current.value, //どういう内容の投稿をしたか（つぶやきの中身）
     };
 
     if(file){
@@ -33,7 +33,7 @@ export default function Share() {
         console.log(err);        
       }
     }
-
+    // APIをたたく
     try {
       await axios.post("/posts", newPost);
       window.location.reload();
@@ -59,22 +59,19 @@ export default function Share() {
             type="text" 
             className='shareInput' 
             placeholder='今、何をしている？'
-            ref={desc}
+            ref={desc}  //useRefを使用してinput情報を取得
           />
         </div>
         <hr className='shareHr' />
         <form className="shareButtons" onSubmit={(e)=> handleSubmit(e)}>
           <div className='shareOptions'>
+            {/* labelに htmlFor='file'で、下のinputタグのidと合わせることで、
+            label内でinputの機能をもたせることができる　*/}
             <label className='shareOption' htmlFor='file'>
               <Image className='shareIcon' htmlColor='blue' />
               <span className="shareOptionText">写真</span>
-              <input 
-                type="file" 
-                id='file' 
-                accept='.png, .jpeg, .jpg'
-                style={{ display: "none" }}
-                onChange={(e) => setFile(e.target.files[0])}
-              />
+              <input type="file" id='file' accept='.png, .jpeg, .jpg'
+                style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} />
             </label>
             <div className='shareOption'>
               <Gif className='shareIcon' htmlColor='hotpink' />
@@ -89,6 +86,7 @@ export default function Share() {
               <span className="shareOptionText">投票</span>
             </div>
           </div>
+          {/* 投稿　type='submit'を付与 */}
           <button className='shareButton' type='submit'>
             投稿
           </button>

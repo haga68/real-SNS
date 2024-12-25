@@ -44,7 +44,7 @@
 
 .rightbarProfileImgContainer {
   margin-right: 10px;
-  position: relative;
+  position: relative;  /* 基準 */
 }
 
 .rightbarProfileImg {
@@ -60,7 +60,7 @@
 
 .rightbarOnline {
   background-color: purple;
-  position: absolute;
+  position: absolute;  /* .rightbarProfileImgContainerを基準に */
   width: 12px;
   height: 12px;
   border-radius: 50%;

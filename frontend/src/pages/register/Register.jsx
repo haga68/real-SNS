@@ -17,7 +17,8 @@ export default function Register() {
     //パスワードと確認用パスワードがあっているかどうかを確認
     if(password.current.value !== passwordConfirmation.current.value){
       passwordConfirmation.current.setCustomValidity("パスワードが違います。");
-    } else {
+      // setCustomValidityは、もともとHTMLに組み込まている関数？
+    } else {  //正しい場合
       try {
         //インプットのフォームに打ち込んだ文字列
         const user = {

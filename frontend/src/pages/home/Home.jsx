@@ -5,6 +5,8 @@ import Sidebar from '../../components/sidebar/Sidebar';
 import TimeLine from '../../components/timeline/TimeLine';
 import Rightbar from '../../components/rightbar/Rightbar';
 
+// pagesフォルダのcomponent・・・・ページ遷移に関するcomponent
+// componentsフォルダのcomponent・・上記componentの中の部品
 
 export default function Home() {
   return (

@@ -1,3 +1,4 @@
+//actionの場合に応じて、状態を変更 //このアクションが来たら、こういう状態に変更する
 const AuthReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_START":
@@ -19,11 +20,8 @@ const AuthReducer = (state, action) => {
         error: action.payload,
       };
     default:
-      return state;//新しい状態を返す
+      return state; //新しい状態を返す
   }
 };
 
 export default AuthReducer;
-
-//actionの場合に応じて、状態を変更
-//このアクションが来たら、こういう状態に変更する

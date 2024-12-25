@@ -7,24 +7,26 @@ const User = require("../models/User");
 //ユーザー情報の更新
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
-    //打ち込まれたuserのIDが、パラメターのIDと等しければ、もしくは、isAdminがtrue（権限がある）場合
+    //bodyの要素として打ち込まれたuserのIDが、パラメターのID（url欄）と等しいか、
+    // もしくは、isAdminがtrue（権限がある）場合
     try {
       const user = await User.findByIdAndUpdate(req.params.id, {
         //一人のユーザーを見つけて更新(mongoose)
-        //req.params.id(ログイン中のid)のユーザー情報を更新        
+        //req.params.id(ログイン中のid)のユーザー情報を更新
         $set: req.body,
-        //User.jsのパラメターをすべてを、Postmanで打ち込むbody要素で書き換える
+        //User.jsのパラメターのすべて（$set）を、Postmanで打ち込むbody要素（req.body）で書き換える
       });
       res.status(200).json("ユーザー情報が更新されました");
     } catch (err) {
       return res.status(500).json(err);
     }
   } else {
+    //IDが違い、権限もない場合
     return res
       .status(403)
       .json("あなたは自分のアカウントのときだけ情報を更新できます");
   }
-})
+});
 
 //ユーザー情報の削除
 router.delete("/:id", async (req, res) => {
@@ -40,31 +42,33 @@ router.delete("/:id", async (req, res) => {
       .status(403)
       .json("あなたは自分のアカウントのときだけ情報を削除できます");
   }
-})
-
+});
 
 //ユーザー情報の取得
 // router.get("/:id", async (req, res) => {
 //   try {
 //     const user = await User.findById(req.params.id);
-//     const { password, updatedAt, ...other } = user._doc;//分割代入、スプレッド構文で代入
-//     return res.status(200).json(other);//password,updateAtを除外したotherを取得
+
+//     const { password, updatedAt, ...other } = user._doc; //分割代入で属性を取出す
+//     // password, updatedAtを取り除いて、otherだけ取得
+//     return res.status(200).json(other); //password,updateAtを除外したotherを取得
 //   } catch (err) {
 //     return res.status(500).json(err);
 //   }
 // });
+// Profileに関しては、/:idがそもそも無いので、以下のクエリによるユーザー情報取得に変更
 
 //クエリでユーザー情報を取得
 router.get("/", async (req, res) => {
-  const userId = req.query.userId;
-  const username = req.query.username;
+  const userId = req.query.userId; //userId は url文末の?userId = .... の ....の部分
+  const username = req.query.username; //username は url文末の?username = ....の ....の部分
   try {
-    const user = userId 
-    ? await User.findById(userId) 
-    : await User.findOne({ username : username});
+    const user = userId
+      ? await User.findById(userId) //userIdが存在するなら、userIdを使ってユーザーを探す
+      : await User.findOne({ username: username }); //userIdが存在しないなら、usernameを使ってユーザーを探す
 
-    const { password, updatedAt, ...other } = user._doc;//分割代入、スプレッド構文で代入
-    return res.status(200).json(other);//password,updateAtを除外したotherを取得
+    const { password, updatedAt, ...other } = user._doc; //分割代入、スプレッド構文で代入
+    return res.status(200).json(other); //password,updateAtを除外したotherを取得
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -72,25 +76,26 @@ router.get("/", async (req, res) => {
 
 //ユーザーのフォロー
 router.put("/:id/follow", async (req, res) => {
+  // そもそもフォロー可能か？
+  // フォローしようとしているid（req.params.id）が、自分自身のid（req.body.userId）ではないか？
   if (req.body.userId !== req.params.id) {
-    //自分自身のIDとこれからフォローするユーザーIDと等しくない場合、フォロー可能
     try {
-      //これからフォローするID
+      //これからフォローするIDをuserに格納
       const user = await User.findById(req.params.id);
       //自分自身のID
       const currentUser = await User.findById(req.body.userId);
 
-      //followersに自分自身が含まれていなければ、フォローできる
+      //相手userのfollowersに自分自身のIDが含まれていなければ、フォローできる
       if (!user.followers.includes(req.body.userId)) {
         await user.updateOne({
-          $push: {  //配列にPushしていく
-            followers: req.body.userId,//followersの中に、自分自身のユーザーIDを入れていく
+          $push: {
+            followers: req.body.userId, //followersの中に、自分自身のユーザーIDを入れていく
           },
         });
         //自身のフォロー数を1カウントアップ
         await currentUser.updateOne({
           $push: {
-            followings: req.params.id,//followingsの中に、フォローするIDをいれる
+            followings: req.params.id, //followingsの中に、フォローするIDをいれる
           },
         });
         return res.status(200).json("フォローに成功しました");
@@ -117,8 +122,9 @@ router.put("/:id/unfollow", async (req, res) => {
       //followersに自身が含まれていれば、フォローを外せる
       if (user.followers.includes(req.body.userId)) {
         await user.updateOne({
-          $pull: {  //配列から取り除く（pull）
-            followers: req.body.userId,//followersの中から、自身のユーザーIDを除外
+          $pull: {
+            //配列から取り除く（pull）
+            followers: req.body.userId, //followersの中から、自身のユーザーIDを除外
           },
         });
         //自身のフォロー数を1カウントダウン
@@ -129,9 +135,7 @@ router.put("/:id/unfollow", async (req, res) => {
         });
         return res.status(200).json("フォロー解除しました");
       } else {
-        return res
-          .status(403)
-          .json("このユーザーは、フォロー解除できません");
+        return res.status(403).json("このユーザーは、フォロー解除できません");
       }
     } catch (err) {
       return res.status(500).json(err);

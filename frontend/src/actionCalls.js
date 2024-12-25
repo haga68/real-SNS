@@ -2,18 +2,18 @@ import axios from "axios";
 // import { LoginStart, LoginSuccess, LoginError } from "../apiCall.js"
 
 export const loginCall = async (user, dispatch) => {
+  // ログインボタンを押したら、ログインスタートの通知を飛ばす
   dispatch({ type: "LOGIN_START" }); // dispatch(LoginStart(user)) こちらでも可です。
   try {
-    //APIをたたく
+    //APIをたたく（user inputformに入力した文字列）
     const response = await axios.post("auth/login", user);
     //ログインサクセスを通知して、状態を更新
     dispatch({ type: "LOGIN_SUCCESS", payload: response.data }); // dispatch(LoginSuccess(user)) こちらでも可です。
   } catch (err) {
     //エラーであれば、エラーの状態を更新
-    dispatch({ type: "LOGIN_ERROR", payload: err }); // dispatch(LoginError(err)) こちらでも可です。  
+    dispatch({ type: "LOGIN_ERROR", payload: err }); // dispatch(LoginError(err)) こちらでも可です。
   }
 };
-
 
 // JavaScript の例外 "is not a function" は、値を関数として呼び出そうとしたが、
 // その値が実際には関数ではなかった場合に発生します。
